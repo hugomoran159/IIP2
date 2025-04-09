@@ -1,0 +1,10 @@
+Tenure_Group,Tenure_Subtype,One_Off_Single,Houses_Scheme,Apartments,Total,Source_State,Source_Domestic,Source_International
+One_Off_Builds,,,2063,,,2063,,2063,
+Social,"LAs, AHBs etc.",,982,3870,4853,2230,545,2078
+Affordable,For_Sale,,982,3870,4853,1635,1073,2145
+Affordable,Cost_Rental,,982,3870,4853,1635,1073,2145
+,Subtotal_Affordable,,,1965,7741,9705,,,
+Private,For_Sale,,1965,3870,5835,,1945,3890
+Private,PRS,,,3870,3870,,302,3568
+,Subtotal_Private,,,1965,7741,9705,,,
+Total,,,2063,4912,19351,26326,5500,7000,13826 

@@ -1,0 +1,4 @@
+# Defines the sankey_data directory as a CSV source
+name: sankey_data
+type: csv
+options: {} 

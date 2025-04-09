@@ -1,0 +1,10 @@
+Tenure_Group,Tenure_Subtype,Mix_Percent,One_Off_Single,Houses_Scheme,Apartments,Total
+One_Off_Builds,,,,,5500
+Social,"LAs, AHBs etc.",0.2,,4360,6540,10900
+Affordable,For_Sale,0.4,,4360,6540,10900
+Affordable,Cost_Rental,0.2,,4360,6540,10900
+,Subtotal_Affordable,,,,8720,13080,21800
+Private,For_Sale,0.4,,8720,6540,15260
+Private,PRS,0.2,,,6540,6540
+,Subtotal_Private,,,,8720,13080,21800
+Total,,,,5500,21800,32700,60000 

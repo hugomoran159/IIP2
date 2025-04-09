@@ -1,0 +1,4 @@
+Category,Equity_Percent,Debt_Percent,Notes
+One_Off_build,0.5,0.5,
+Houses_scheme,0.3,0.7,"Recycled every 6mths"
+Apartment,0.2,0.8,"Full capex amount" 
