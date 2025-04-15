@@ -1,4 +1,4 @@
 # Defines the sankey_three_stage directory as a CSV source
-name: sankey_three_stage
+name: sankey_b
 type: csv
 options: {} 
