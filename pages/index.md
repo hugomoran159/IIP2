@@ -20,7 +20,7 @@ We have examined:
 
 We have looked at the development finance required  for 3 separate scenarios.  Firstly, 30,000 units which is close to the actual output achieved in 2024. Secondly, 2 medium-term scenarios – 42,500 and the 60,000 units referenced in the Programme for Government 2025 .
 
-### Source of Development Finance Required (€m)
+## Source of Development Finance Required (€m)
 
 
 ```sql sources_long_data
@@ -54,7 +54,7 @@ select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model
 
 ** Alternatively, we can see how many units are financed by the state and private sectors... **
 
-### Number of Units per Annum
+## Number of Units per Annum
 <div>
 
 ```sql units_long_data
@@ -90,7 +90,7 @@ select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model
 
 The following two perspectives highlight how finance flows from the providers of development finance to the ultimate owners of the houses and apartments.
 
-### Development Finance to Purchaser Flow 
+## Development Finance to Purchaser Flow 
 
 <Tabs>
     <Tab label="30,000 Units Scenario">
@@ -163,7 +163,7 @@ Let's examine how tenures are funded under three separate scenarios:
 
 3. 60,000 units: The maximum number of residential units that could be funded if the key challenges outlined below are not addressed.
 
-### Implications by Tenure 
+## Implications by Tenure 
 
 <Tabs>
     <Tab label="30,000 Units Scenario">
@@ -304,22 +304,94 @@ But there are several challenges in the Residential Development Finance Market t
     <Tab label="30,000 Units Scenario">
 
 ```sql long_term_ownership_data_30k
-
-
+select * from ownership_tenure.ownership_by_tenure
 ```
+
+<BarChart
+    data={long_term_ownership_data_30k}
+    x=EndPurchaser
+    y=Units
+    series=Tenure
+    stacked=true
+    xAxisTitle="End Purchaser"
+    yAxisTitle="Number of Units"
+    echartsOptions={{
+        tooltip: {
+            trigger: 'axis',
+            formatter: (params) => {
+                let tooltip = params[0].name + '<br/>';
+                params.forEach(param => {
+                    if (param.value[1] > 0) {
+                        tooltip += param.marker + param.seriesName + ': ' + param.value[1].toLocaleString() + '<br/>';
+                    }
+                });
+                return tooltip;
+            }
+        }
+    }}
+/>
 
     </Tab>
     <Tab label="42,500 Units Scenario">
 
 ```sql long_term_ownership_data_42k
-
+select * from ownership_tenure.ownership_by_tenure_42k
 ```
+
+<BarChart
+    data={long_term_ownership_data_42k}
+    x=EndPurchaser
+    y=Units
+    series=Tenure
+    stacked=true
+    xAxisTitle="End Purchaser"
+    yAxisTitle="Number of Units"
+    echartsOptions={{
+        tooltip: {
+            trigger: 'axis',
+            formatter: (params) => {
+                let tooltip = params[0].name + '<br/>';
+                params.forEach(param => {
+                    if (param.value[1] > 0) {
+                        tooltip += param.marker + param.seriesName + ': ' + param.value[1].toLocaleString() + '<br/>';
+                    }
+                });
+                return tooltip;
+            }
+        }
+    }}
+/>
 
     </Tab>
     <Tab label="60,000 Units Scenario">
 
 ```sql long_term_ownership_data_60k
-
+select * from ownership_tenure.ownership_by_tenure_60k
 ```
+
+<BarChart
+    data={long_term_ownership_data_60k}
+    x=EndPurchaser
+    y=Units
+    series=Tenure
+    stacked=true
+    xAxisTitle="End Purchaser"
+    yAxisTitle="Number of Units"
+    echartsOptions={{
+        tooltip: {
+            trigger: 'axis',
+            formatter: (params) => {
+                let tooltip = params[0].name + '<br/>';
+                params.forEach(param => {
+                    if (param.value[1] > 0) {
+                        tooltip += param.marker + param.seriesName + ': ' + param.value[1].toLocaleString() + '<br/>';
+                    }
+                });
+                return tooltip;
+            }
+        }
+    }}
+/>
+
     </Tab>
 </Tabs>
