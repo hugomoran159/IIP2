@@ -95,16 +95,16 @@ The following two perspectives highlight how finance flows from the providers of
 <Tabs>
     <Tab label="30,000 Units Scenario">
 
-```sql sankey_finance_flow_data
+```sql sankey_finance_flow_data_30k
 SELECT
     Development_Finance AS source,
     Purchaser AS target,
     Value_M AS value
-FROM sankey_data.finance_flows
+FROM sankey_data.small
 ```
 
 <SankeyChart
-    data={sankey_finance_flow_data}
+    data={sankey_finance_flow_data_30k}
     source=source
     target=target
     value=value
@@ -114,16 +114,16 @@ FROM sankey_data.finance_flows
     </Tab>
     <Tab label="60,000 Units Scenario">
 
-```sql sankey_finance_flow_data
+```sql sankey_finance_flow_data_60k
 SELECT
     Development_Finance AS source,
     Purchaser AS target,
     Value_M AS value
-FROM sankey_data.finance_flows
+FROM sankey_data.large
 ```
 
 <SankeyChart
-    data={sankey_finance_flow_data}
+    data={sankey_finance_flow_data_60k}
     source=source
     target=target
     value=value
@@ -297,3 +297,29 @@ But there are several challenges in the Residential Development Finance Market t
 * Affordable Housing not being financed by private sources due to cost/viability issues, with neither the Corí Conaithe or the Secure Tenancy Affordable Rental Investment (STAR) Scheme delivering effectively at present.
 
 * The Private Rental Sector (PRS) is not functioning and delivered no new residential units in 2024. 
+
+## Long-term Ownership by Tenure
+
+<Tabs>
+    <Tab label="30,000 Units Scenario">
+
+```sql long_term_ownership_data_30k
+
+
+```
+
+    </Tab>
+    <Tab label="42,500 Units Scenario">
+
+```sql long_term_ownership_data_42k
+
+```
+
+    </Tab>
+    <Tab label="60,000 Units Scenario">
+
+```sql long_term_ownership_data_60k
+
+```
+    </Tab>
+</Tabs>
