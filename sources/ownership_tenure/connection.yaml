@@ -1,0 +1,4 @@
+# Defines the sankey_three_stage directory as a CSV source
+name: ownership_tenure
+type: csv
+options: {} 

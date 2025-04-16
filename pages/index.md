@@ -4,7 +4,7 @@ title:  Review of Capital Required for Irish Residential Market
 # Evidence will pick up the housing_model_data source directory automatically.
 ---
 
-## Introduction
+# Introduction
 
 Irish Institutional Property (IIP) has updated its bespoke analysis of the likely capital requirement to fund the construction, and ultimate ownership of residential output. This analysis builds on several recent publications, notably from - the Commission on Housing, Department of Finance and the Central Bank of Ireland. This literature is supplemented by market soundings and a high-level finance model commissioned by IIP.
 
@@ -16,17 +16,18 @@ We have examined:
 * Tenure, and the impact this has on funding capacity, including the impact that the state capital expenditure on housing can impact the total funding available for residential development.
 
 
-### Development Finance to Build Houses and Apartments
+# Development Finance to Build Houses and Apartments
 
-We have looked at the development finance required  for 3 separate scenarios.  Firstly, 30,000 units which is close to the actual output achieved in 2024. Secondly, 2 medium-term scenarios – 50,000 and the 60,000 units referenced in the Programme for Government 2025 .
+We have looked at the development finance required  for 3 separate scenarios.  Firstly, 30,000 units which is close to the actual output achieved in 2024. Secondly, 2 medium-term scenarios – 42,500 and the 60,000 units referenced in the Programme for Government 2025 .
 
-### Source of Development Finance
+### Source of Development Finance Required (€m)
+
 
 ```sql sources_long_data
 -- Reshape data from wide to long format for charting
 select '30k Units' as Scenario, Source, Base_2024 as Value from housing_model_data.capital_sources_value where Source != 'Total'
 UNION ALL
-select '50k Units' as Scenario, Source, Scenario_50k as Value from housing_model_data.capital_sources_value where Source != 'Total'
+select '42k Units' as Scenario, Source, Scenario_50k as Value from housing_model_data.capital_sources_value where Source != 'Total'
 UNION ALL
 select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model_data.capital_sources_value where Source != 'Total'
 ```
@@ -40,7 +41,6 @@ select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model
     series=Source
     stacked=true
     sort=false
-    title="Source of Development Finance Required (€m)"
     xAxisTitle="Output Scenario"
     yAxisTitle="Finance" 
     yFmt='€#,##0.0,"B"'
@@ -48,19 +48,20 @@ select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model
 
 </div>
 
-### Key Issues:
+** Key Issues: **
 
-### As we examine the current housing finance market, it appears unlikely that sufficient finance would be available to deliver 60,000 residential units.
+ As we examine the current housing finance market, it appears unlikely that sufficient finance would be available to deliver 60,000 residential units. 
 
-Alternatively, we can see how many units are financed by the state and private sectors...
+** Alternatively, we can see how many units are financed by the state and private sectors... **
 
+### Number of Units per Annum
 <div>
 
 ```sql units_long_data
 -- Reshape number_of_units data for charting
 select '30k Units' as Scenario, Source, Base_2024 as Value from housing_model_data.number_of_units where Source != 'Total'
 UNION ALL
-select '50k Units' as Scenario, Source, Scenario_50k as Value from housing_model_data.number_of_units where Source != 'Total'
+select '42k Units' as Scenario, Source, Scenario_50k as Value from housing_model_data.number_of_units where Source != 'Total'
 UNION ALL
 select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model_data.number_of_units where Source != 'Total'
 ```
@@ -72,7 +73,6 @@ select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model
     series=Source 
     stacked=true
     sort=false
-    title="Number of Units per Annum"
     xAxisTitle="RESIDENTIAL UNITS P.A"
     yAxisTitle="Number of Units"
     yAxisFormat=",.0f"
@@ -86,11 +86,33 @@ select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model
 
 * Private finance will deliver 47,000 of the 60,000, with 53% of units being financed by private institutional capital.
 
-### Another perspective on the flow of development finance to the residential market.
+** Another perspective on the flow of development finance to the residential market. **
 
 The following two perspectives highlight how finance flows from the providers of development finance to the ultimate owners of the houses and apartments.
 
-### Development Finance to Purchaser Flow (60k Units Scenario, €m)
+### Development Finance to Purchaser Flow 
+
+<Tabs>
+    <Tab label="30,000 Units Scenario">
+
+```sql sankey_finance_flow_data
+SELECT
+    Development_Finance AS source,
+    Purchaser AS target,
+    Value_M AS value
+FROM sankey_data.finance_flows
+```
+
+<SankeyChart
+    data={sankey_finance_flow_data}
+    source=source
+    target=target
+    value=value
+    title="The finance to build and buy/own 30,000 units"
+    valueFmt='€#,##0"M"'
+/>
+    </Tab>
+    <Tab label="60,000 Units Scenario">
 
 ```sql sankey_finance_flow_data
 SELECT
@@ -108,12 +130,14 @@ FROM sankey_data.finance_flows
     title="The finance to build and buy/own 60,000 units"
     valueFmt='€#,##0"M"'
 />
+    </Tab>
+</Tabs> 
 
-### Key Issues:
+** Key Issues: **
 
 * The Private Rented Sector is not currently functioning with no PRS units completed in 2024, as evidenced by the lack of any institutional capital on the purchaser/owner side of the chart for the 30,000 units scenario.
 
-### Development Finance and Tenure
+# Development Finance and Tenure
 
 There are several distinct types of housing tenure, each requiring funding of different types and from different sources. For example:
 
@@ -129,17 +153,17 @@ A diverse range of funding, from numerous sources, is required to deliver all of
 
 Let's examine how tenures are funded under three separate scenarios:
 
-### Current Residential Development Finance Market
+** Current Residential Development Finance Market **
 
 1. 30,000 units: 2024 residential output of approximately 30,000 units (not that final expenditure and unit numbers not yet available for social and affordable delivery as at 11 March 2024).
 
 2. 42,500 units: The maximum number of residential units that could be funded if the key challenges outlined below are not addressed. 
 
-### Future Residential Development Finance Market
+** Future Residential Development Finance Market **
 
 3. 60,000 units: The maximum number of residential units that could be funded if the key challenges outlined below are not addressed.
 
-### Implications by Tenure (€m)
+### Implications by Tenure 
 
 <Tabs>
     <Tab label="30,000 Units Scenario">
@@ -176,7 +200,6 @@ SELECT source, target, value FROM finance_to_tenure
 UNION ALL
 SELECT source, target, value FROM tenure_to_purchaser
 ```
-
 <SankeyChart
     data={three_stage_sankey_data_30k}
     source=source
@@ -265,9 +288,9 @@ SELECT source, target, value FROM tenure_to_purchaser
     </Tab>
 </Tabs>
 
-### Key Issues:
+** Key Issues: **
 
-* But there are several challenges in the Residential Development Finance Market that need to be addressed if significantly higher levels of output are to be achieved. 
+But there are several challenges in the Residential Development Finance Market that need to be addressed if significantly higher levels of output are to be achieved. 
 
 * State funding is allocated primarily through either direct procurement or forwarded funding arrangements.
 
