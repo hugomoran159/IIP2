@@ -306,7 +306,7 @@ But there are several challenges in the Residential Development Finance Market t
 
 * The Private Rental Sector (PRS) is not functioning and delivered no new residential units in 2024. 
 
-## Long-term Ownership by Tenure
+## Development Finance by Tenure
 
 ```sql dev_finance_by_tenure_30k
 SELECT
@@ -338,7 +338,7 @@ WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
 GROUP BY Tenure, Development_Finance
 ```
 
-<Grid cols=2>
+<Grid cols=1>
 
 <BarChart
     data={dev_finance_by_tenure_30k}
@@ -347,10 +347,11 @@ GROUP BY Tenure, Development_Finance
     series=Tenure
     stacked=true
     sort=false
+    title="30,000 Units Scenario"
     xAxisTitle="Source of Finance"
     yAxisTitle="Development Finance (€m)"
     yFmt='€#,##0"M"'
-   
+    yMax={15000}
 />
 
 <BarChart
@@ -360,10 +361,11 @@ GROUP BY Tenure, Development_Finance
     series=Tenure
     stacked=true
     sort=false
+    title="42,500 Units Scenario"
     xAxisTitle="Source of Finance"
     yAxisTitle="Development Finance (€m)"
     yFmt='€#,##0"M"'
-   
+    yMax={15000}
 />
 
 <BarChart
@@ -373,9 +375,10 @@ GROUP BY Tenure, Development_Finance
     series=Tenure
     stacked=true
     sort=false
+    title="60,000 Units Scenario"
     xAxisTitle="Source of Finance"
     yAxisTitle="Development Finance (€m)"
     yFmt='€#,##0"M"'
-    
+    yMax={15000}
 />
 </Grid>
