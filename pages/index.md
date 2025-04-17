@@ -308,98 +308,74 @@ But there are several challenges in the Residential Development Finance Market t
 
 ## Long-term Ownership by Tenure
 
-<Tabs>
-    <Tab label="30,000 Units Scenario">
-
-```sql long_term_ownership_data_30k
-select * from ownership_tenure.ownership_by_tenure
+```sql dev_finance_by_tenure_30k
+SELECT
+    Tenure,
+    Development_Finance AS Source,
+    SUM(try_cast(Capital AS DOUBLE)) AS Value -- Use try_cast
+FROM sankey_a.sankey_a
+WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
+GROUP BY Tenure, Development_Finance
 ```
 
-<BarChart
-    data={long_term_ownership_data_30k}
-    x=EndPurchaser
-    y=Units
-    series=Tenure
-    stacked=true
-    xAxisTitle="End Purchaser"
-    yAxisTitle="Number of Units"
-    echartsOptions={{
-        tooltip: {
-            trigger: 'axis',
-            formatter: (params) => {
-                let tooltip = params[0].name + '<br/>';
-                params.forEach(param => {
-                    if (param.value[1] > 0) {
-                        tooltip += param.marker + param.seriesName + ': ' + param.value[1].toLocaleString() + '<br/>';
-                    }
-                });
-                return tooltip;
-            }
-        }
-    }}
-/>
-
-    </Tab>
-    <Tab label="42,500 Units Scenario">
-
-```sql long_term_ownership_data_42k
-select * from ownership_tenure.ownership_by_tenure_42k
+```sql dev_finance_by_tenure_42k
+SELECT
+    Tenure,
+    Development_Finance AS Source,
+    SUM(try_cast(Capital AS DOUBLE)) AS Value -- Use try_cast
+FROM sankey_b.sankey_b
+WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
+GROUP BY Tenure, Development_Finance
 ```
 
-<BarChart
-    data={long_term_ownership_data_42k}
-    x=EndPurchaser
-    y=Units
-    series=Tenure
-    stacked=true
-    xAxisTitle="End Purchaser"
-    yAxisTitle="Number of Units"
-    echartsOptions={{
-        tooltip: {
-            trigger: 'axis',
-            formatter: (params) => {
-                let tooltip = params[0].name + '<br/>';
-                params.forEach(param => {
-                    if (param.value[1] > 0) {
-                        tooltip += param.marker + param.seriesName + ': ' + param.value[1].toLocaleString() + '<br/>';
-                    }
-                });
-                return tooltip;
-            }
-        }
-    }}
-/>
-
-    </Tab>
-    <Tab label="60,000 Units Scenario">
-
-```sql long_term_ownership_data_60k
-select * from ownership_tenure.ownership_by_tenure_60k
+```sql dev_finance_by_tenure_60k
+SELECT
+    Tenure,
+    Development_Finance AS Source,
+    SUM(try_cast(Capital AS DOUBLE)) AS Value -- Use try_cast
+FROM sankey_c.sankey_c
+WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
+GROUP BY Tenure, Development_Finance
 ```
 
+<Grid cols=2>
+
 <BarChart
-    data={long_term_ownership_data_60k}
-    x=EndPurchaser
-    y=Units
+    data={dev_finance_by_tenure_30k}
+    x=Source
+    y=Value
     series=Tenure
     stacked=true
-    xAxisTitle="End Purchaser"
-    yAxisTitle="Number of Units"
-    echartsOptions={{
-        tooltip: {
-            trigger: 'axis',
-            formatter: (params) => {
-                let tooltip = params[0].name + '<br/>';
-                params.forEach(param => {
-                    if (param.value[1] > 0) {
-                        tooltip += param.marker + param.seriesName + ': ' + param.value[1].toLocaleString() + '<br/>';
-                    }
-                });
-                return tooltip;
-            }
-        }
-    }}
+    sort=false
+    xAxisTitle="Source of Finance"
+    yAxisTitle="Development Finance (€m)"
+    yFmt='€#,##0"M"'
+   
 />
 
-    </Tab>
-</Tabs>
+<BarChart
+    data={dev_finance_by_tenure_42k}
+    x=Source
+    y=Value
+    series=Tenure
+    stacked=true
+    sort=false
+    xAxisTitle="Source of Finance"
+    yAxisTitle="Development Finance (€m)"
+    yFmt='€#,##0"M"'
+   
+/>
+
+<BarChart
+    data={dev_finance_by_tenure_60k}
+    x=Source
+    y=Value
+    series=Tenure
+    stacked=true
+    sort=false
+    xAxisTitle="Source of Finance"
+    yAxisTitle="Development Finance (€m)"
+    yFmt='€#,##0"M"'
+    
+/>
+</Grid>
