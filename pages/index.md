@@ -174,8 +174,9 @@ WITH finance_to_tenure AS (
     SELECT
         Development_Finance AS source,
         Tenure AS target,
+        -- Sum capital only for the Finance->Tenure stage from original data
         SUM(Capital) AS value
-    FROM sankey_a.sankey_a
+    FROM sankey_a.sankey_a -- Use original data for this stage
     -- Ensure links have value and valid nodes
     WHERE Capital > 0 AND Capital IS NOT NULL
       AND Tenure IS NOT NULL AND Tenure != ''
@@ -187,10 +188,11 @@ tenure_to_purchaser AS (
      SELECT
         Tenure AS source,
         Purchaser AS target,
-        SUM(Capital) AS value
-    FROM sankey_a.sankey_a
+        -- Sum capital only for the Tenure->Purchaser stage from new data
+        SUM(CAST(Capital AS DOUBLE)) AS value -- Cast Capital to DOUBLE
+    FROM sankey_a.sankey_a_purchaser -- Corrected data source name back
     -- Ensure links have value and valid nodes
-    WHERE Capital > 0 AND Capital IS NOT NULL
+    WHERE CAST(Capital AS DOUBLE) > 0 AND Capital IS NOT NULL
       AND Purchaser IS NOT NULL AND Purchaser != ''
       AND Tenure IS NOT NULL AND Tenure != ''
     GROUP BY Tenure, Purchaser
@@ -213,13 +215,14 @@ SELECT source, target, value FROM tenure_to_purchaser
     <Tab label="42,500 Units Scenario">
 
 ```sql three_stage_sankey_data_42k
--- Create links between Development Finance → Tenure → Purchaser with tracking IDs for 60k scenario
+-- Create links between Development Finance -> Tenure -> Purchaser with tracking IDs for 60k scenario
 WITH finance_to_tenure AS (
     SELECT 
         Development_Finance AS source,
         Tenure AS target,
+        -- Sum capital only for the Finance->Tenure stage from original data
         SUM(Capital) AS value
-    FROM sankey_b.sankey_b -- Assuming this table holds 60k data
+    FROM sankey_b.sankey_b -- Use original data for this stage
     WHERE Capital > 0
     GROUP BY Development_Finance, Tenure
 ),
@@ -227,10 +230,11 @@ tenure_to_purchaser AS (
     SELECT 
         Tenure AS source,
         Purchaser AS target,
-        SUM(Capital) AS value
-    FROM sankey_b.sankey_b -- Assuming this table holds 60k data
-    WHERE Capital > 0
-    GROUP BY Development_Finance, Tenure, Purchaser
+        -- Sum capital only for the Tenure->Purchaser stage from new data
+        SUM(CAST(Capital AS DOUBLE)) AS value -- Cast Capital to DOUBLE
+    FROM sankey_b.sankey_b_purchaser -- Corrected data source name back
+    WHERE CAST(Capital AS DOUBLE) > 0 -- Cast Capital in WHERE clause
+    GROUP BY Tenure, Purchaser
 )
 
 -- Combine all links
@@ -251,24 +255,28 @@ SELECT source, target, value FROM tenure_to_purchaser
     <Tab label="60,000 Units Scenario">
 
 ```sql three_stage_sankey_data_60k
--- Create links between Development Finance → Tenure → Purchaser with tracking IDs for 60k scenario
+-- Create links between Development Finance -> Tenure -> Purchaser for 60k scenario
 WITH finance_to_tenure AS (
     SELECT 
         Development_Finance AS source,
         Tenure AS target,
+        -- Sum capital only for the Finance->Tenure stage from original data
         SUM(Capital) AS value
-    FROM sankey_c.sankey_c -- Assuming this table holds 60k data
-    WHERE Capital > 0
+    FROM sankey_c.sankey_c -- Use original data for this stage
+    WHERE Capital IS NOT NULL AND CAST(Capital AS DOUBLE) > 0 -- Ensure capital is numeric and > 0
     GROUP BY Development_Finance, Tenure
 ),
 tenure_to_purchaser AS (
     SELECT 
         Tenure AS source,
         Purchaser AS target,
-        SUM(Capital) AS value
-    FROM sankey_c.sankey_c -- Assuming this table holds 60k data
-    WHERE Capital > 0
-    GROUP BY Development_Finance, Tenure, Purchaser
+        -- Sum capital only for the Tenure->Purchaser stage from new data
+        SUM(CAST(Capital AS DOUBLE)) AS value -- Cast Capital to DOUBLE
+    FROM sankey_c.sankey_c_purchaser -- Use NEW data for this stage
+    WHERE Capital IS NOT NULL AND CAST(Capital AS DOUBLE) > 0 -- Cast Capital in WHERE clause
+      AND Purchaser IS NOT NULL AND Purchaser != ''
+      AND Tenure IS NOT NULL AND Tenure != ''
+    GROUP BY Tenure, Purchaser
 )
 
 -- Combine all links
