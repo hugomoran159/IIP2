@@ -52,6 +52,11 @@ select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model
 
  As we examine the current housing finance market, it appears unlikely that sufficient finance would be available to deliver 60,000 residential units. 
 
+* Private Finance. The finance required to development 60,000 units (€26.3bn) is significant, with almost 80% coming from private sources 
+* State. It is assumed that the state capital allocation to Housing is near the upper limit, both historically and relative to other EU/OECD members. Budget 2025 allocates €6.1bn: capital funding €3.2bn, Land Development Agency €1.25bn and Housing Finance Agency €1.65bn.
+* Challenges. Insufficient private finance being attracted to the delivery of affordable housing and the complete lack of a functioning PRS sector.
+
+
 ** Alternatively, we can see how many units are financed by the state and private sectors... **
 
 ## Number of Units per Annum
@@ -151,7 +156,7 @@ There are several distinct types of housing tenure, each requiring funding of di
 
 A diverse range of funding, from numerous sources, is required to deliver all of these tenures in large numbers. 
 
-Let's examine how tenures are funded under three separate scenarios:
+Let's examine how tenures are funded under **three separate scenarios**:
 
 ** Current Residential Development Finance Market **
 
@@ -316,6 +321,13 @@ SELECT
 FROM sankey_a.sankey_a
 WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
 GROUP BY Tenure, Development_Finance
+ORDER BY
+    CASE Development_Finance
+        WHEN 'State Funding' THEN 1
+        WHEN 'Private (Domestic)' THEN 2
+        WHEN 'Private (Institutional)' THEN 3
+        ELSE 4
+    END
 ```
 
 ```sql dev_finance_by_tenure_42k
@@ -326,6 +338,13 @@ SELECT
 FROM sankey_b.sankey_b
 WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
 GROUP BY Tenure, Development_Finance
+ORDER BY
+    CASE Development_Finance
+        WHEN 'State Funding' THEN 1
+        WHEN 'Private (Domestic)' THEN 2
+        WHEN 'Private (Institutional)' THEN 3
+        ELSE 4
+    END
 ```
 
 ```sql dev_finance_by_tenure_60k
@@ -336,6 +355,13 @@ SELECT
 FROM sankey_c.sankey_c
 WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
 GROUP BY Tenure, Development_Finance
+ORDER BY
+    CASE Development_Finance
+        WHEN 'State Funding' THEN 1
+        WHEN 'Private (Domestic)' THEN 2
+        WHEN 'Private (Institutional)' THEN 3
+        ELSE 4
+    END
 ```
 
 <Grid cols=2>
