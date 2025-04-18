@@ -338,7 +338,7 @@ WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
 GROUP BY Tenure, Development_Finance
 ```
 
-<Grid cols=1>
+<Grid cols=2>
 
 <BarChart
     data={dev_finance_by_tenure_30k}
