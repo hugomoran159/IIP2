@@ -1,24 +1,42 @@
 ---
-title:  Review of Capital Required for Irish Residential Market
+title:  Review of capital flows necessary to fund the requirements of the Irish Residential Market
 # We don't need to list individual CSVs as sources anymore,
 # Evidence will pick up the housing_model_data source directory automatically.
 ---
 
+<script>
+const myColorMap = {
+    // Funding Sources / Purchasers (Colors from Image)
+    'State Funding': '#A5CDEE',         // Dark Blue (like Google)
+    'State': '#A5CDEE',
+    'Private (Domestic)': '#44A1BF',   // Gold/Orange (like Twitter)
+    'Domestic': '#44A1BF',
+    'Private (Institutional)': '#226AA4', // Green/Teal (like '/')
+    'Institutional': '#226AA4',
+    'Private Individuals': '#44A1BF',   // Light Blue (like Direct)
+
+    // Tenures (Colors from Image)
+    'Social Housing': '#8DACBF',          // Maroon/Red (like LinkedIn)
+    'One-Off Builds': '#85C7C6',        // Beige/Tan (like Tiktok)
+    'Affordable for Sale': '#D2C6AC',    // Bright Blue/Cyan (like Pinterest/Bing)
+    'Private for Sale': '#46A486',        // Muted Blue/Grey (like Facebook)
+    'Affordable Cost Rental': '#8F3D56', // Teal/Cyan (like Bing/Blog)
+    'Private Rental Sector (PRS)': '#F4B548' // Dark Blue (like Google - REUSED)
+};
+</script>
 # Introduction
 
-Irish Institutional Property (IIP) has updated its bespoke analysis of the likely capital requirement to fund the construction, and ultimate ownership of residential output. This analysis builds on several recent publications, notably from - the Commission on Housing, Department of Finance and the Central Bank of Ireland. This literature is supplemented by market soundings and a high-level finance model commissioned by IIP.
+Irish Institutional Property (IIP) has updated its analysis of the likely capital requirement to fund the construction, and ultimate ownership of residential output, based on data from detailed industry engagement. This analysis builds on several recent publications, notably from - the Commission on Housing, Department of Finance and the Central Bank of Ireland. This literature is supplemented by market soundings and a high-level finance model commissioned by IIP. To understand how the market functions and the critical interplay between development funding, viability based on affordability and long term funding we examine 3 key areas:
 
-We have examined:
 * Development Finance: equity and debt to finance the construction of houses and apartments.
 
 * Investment or Long-term ownership capital: to buy and own the completed residential units.
 
-* Tenure, and the impact this has on funding capacity, including the impact that the state capital expenditure on housing can impact the total funding available for residential development.
-
+* Tenure & Affordability, and the impact this has on the ability to scale overall housing output numbers. Overall housing output can only scale from current levels if the end user can afford to rent or buy new housing. Highlighting the critical importance of using state capital expenditure to leverage (unlock?) private funding to the total funding available for residential development is in place for all tenures.
 
 # Development Finance to Build Houses and Apartments
 
-We have looked at the development finance required  for 3 separate scenarios.  Firstly, 30,000 units which is close to the actual output achieved in 2024. Secondly, 2 medium-term scenarios – 42,500 and the 60,000 units referenced in the Programme for Government 2025 .
+We have looked at the development finance required  for 3 separate scenarios.  Firstly, 30,000 units which is close to the actual output achieved in 2024. Secondly, 2 medium-term scenarios – 42,500, the theoretical maximum number of residential units that could be funded if the key challenges outlined below are not addressed, and the 60,000 units referenced in the Programme for Government 2025 .
 
 ## Source of Development Finance Required (€m)
 
@@ -44,6 +62,10 @@ select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model
     xAxisTitle="Output Scenario"
     yAxisTitle="Finance" 
     yFmt='€#,##0.0,"B"'
+    seriesOrder={['State Funding', 'Private (Domestic)', 'Private (Institutional)']}
+    echartsOptions={{
+        color: ['#A5CDEE', '#44A1BF', '#226AA4']
+    }}
 />
 
 </div>
@@ -52,9 +74,9 @@ select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model
 
  As we examine the current housing finance market, it appears unlikely that sufficient finance would be available to deliver 60,000 residential units. 
 
-* Private Finance. The finance required to development 60,000 units (€26.3bn) is significant, with almost 80% coming from private sources 
 * State. It is assumed that the state capital allocation to Housing is near the upper limit, both historically and relative to other EU/OECD members. Budget 2025 allocates €6.1bn: capital funding €3.2bn, Land Development Agency €1.25bn and Housing Finance Agency €1.65bn.
-* Challenges. Insufficient private finance being attracted to the delivery of affordable housing and the complete lack of a functioning PRS sector.
+* Private Finance. The balance of the financerequired to develop 60,000 units (€26.3bn??) is significant, requiring 80% of all funding to come from private sources 
+* Challenges. Insufficient private finance is being attracted to aid the delivery of affordable housing alongside state funding and the complete lack of a functioning PRS sector.
 
 
 ** Alternatively, we can see how many units are financed by the state and private sectors... **
@@ -81,15 +103,43 @@ select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model
     xAxisTitle="RESIDENTIAL UNITS P.A"
     yAxisTitle="Number of Units"
     yAxisFormat=",.0f"
-    tooltipFormat=",.0f">
-    <ReferenceLine x='30k Units' y=26348 x2='60k Units' y2=44245 color="warning" lineType=dashed lineWidth=2 hideValue=true label="Reliance on institutional finance" labelPosition=belowEnd/>
-    <ReferencePoint x="30k Units" y=26348 label='26%' labelPosition=top labelColor="warning" />
-    <ReferencePoint x="60k Units" y=44245 label='53%' labelPosition=top labelColor="warning" />
+    tooltipFormat=",.0f"
+    seriesOrder={['State Funding', 'Private (Domestic)', 'Private (Institutional)']}
+    echartsOptions={{
+        color: ['#A5CDEE', '#44A1BF', '#226AA4'], // Base colors
+        series: [
+            {}, // Config for 'State Funding' (uses defaults)
+            {}, // Config for 'Private (Domestic)' (uses defaults)
+            {   // Config for 'Private (Institutional)' (index 2)
+                markLine: {
+                    symbol: ['none', 'arrow'], // Arrow at the end
+                    precision: 0, // Use integer coords
+                    label: {
+                        show: true,
+                        position: 'middle', // Or 'start', 'end'
+                        formatter: 'Reliance on Institutional Finance (26% -> 53%)' // Combined label
+                    },
+                    lineStyle: {
+                        color: '#ff9900', // Orange-like color
+                        type: 'dashed',
+                        width: 2
+                    },
+                    data: [
+                        // Define the line segment using coordinates
+                        [ // A single line segment is an array of two points
+                            { coord: ['30k Units', 26348] },
+                            { coord: ['60k Units', 44245] }
+                        ]
+                    ]
+                }
+            }
+        ]
+    }}>
 </BarChart>
 
 </div>
 
-* Private finance will deliver 47,000 of the 60,000, with 53% of units being financed by private institutional capital.
+* Private finance will need to deliver 47,000 of the 60,000, which includes affordable units with 53% of units being financed by private institutional capital.
 
 ** Another perspective on the flow of development finance to the residential market. **
 
@@ -115,6 +165,17 @@ FROM sankey_data.small
     value=value
     title="The finance to build and buy/own 30,000 units"
     valueFmt='€#,##0"M"'
+    echartsOptions={{
+        series: [{
+            data: [
+                { name: 'Private (Institutional)', itemStyle: { color: '#226AA4' } },
+                { name: 'Private (Domestic)', itemStyle: { color: '#44A1BF' } },
+                { name: 'Private Individuals', itemStyle: { color: '#44A1BF' } },
+                { name: 'State Funding', itemStyle: { color: '#A5CDEE' } },
+                { name: 'State', itemStyle: { color: '#A5CDEE' } }
+            ]
+        }]
+    }}
 />
     </Tab>
     <Tab label="60,000 Units Scenario">
@@ -134,6 +195,18 @@ FROM sankey_data.large
     value=value
     title="The finance to build and buy/own 60,000 units"
     valueFmt='€#,##0"M"'
+    echartsOptions={{
+        series: [{
+            data: [
+                { name: 'Private (Institutional)', itemStyle: { color: '#226AA4' } },
+                { name: 'Institutional', itemStyle: { color: '#226AA4' } },
+                { name: 'Private (Domestic)', itemStyle: { color: '#44A1BF' } },
+                { name: 'Private Individuals', itemStyle: { color: '#44A1BF' } },
+                { name: 'State Funding', itemStyle: { color: '#A5CDEE' } },
+                { name: 'State', itemStyle: { color: '#A5CDEE' } } 
+            ]
+        }]
+    }}
 />
     </Tab>
 </Tabs> 
@@ -141,6 +214,8 @@ FROM sankey_data.large
 ** Key Issues: **
 
 * The Private Rented Sector is not currently functioning with no PRS units completed in 2024, as evidenced by the lack of any institutional capital on the purchaser/owner side of the chart for the 30,000 units scenario.
+
+* The imposition of a 2% rent cap has been a key determinant of this decline. The rate of growth is below the level that is required to be competitive in attracting investment by pension funds as it is less than the annual growth in return that is required by managers to ensure that they can match growth in liabilities, as approximated by increases in incomes, with expected returns.
 
 # Development Finance and Tenure
 
@@ -152,7 +227,7 @@ There are several distinct types of housing tenure, each requiring funding of di
 
 * Private Housing: For Sale - Funded by private capital and owned by individuals. For Rent - the Private Rental Sector is funded by private capital and is rented out to individuals at the market rent. 
 
-* Affordable Housing: The Housing Commission highlighted the middle four deciles of income earners ("Squeezed middle"), in need of some form of support to purchase or rent properties (sections 5 and 7 of Report of the Housing Commission). Essentially, the state needs to direct supply side subsidies make properties affordable to buy or rent. 
+* Affordable Housing: The Housing Commission highlighted the middle four deciles of income earners ("Squeezed middle"), in need of some form of support to purchase or rent properties (sections 5 and 7 of Report of the Housing Commission). Essentially, the state needs to direct supply side subsidies make properties affordable to buy or rent, but to optimise output in this section the state needs to use its capital to "crowd in" private institutional captial rather than trying to do this on itts own. The required output can never be met without a viable strategy of this nature. 
 
 A diverse range of funding, from numerous sources, is required to deliver all of these tenures in large numbers. 
 
@@ -162,11 +237,11 @@ Let's examine how tenures are funded under **three separate scenarios**:
 
 1. 30,000 units: 2024 residential output of approximately 30,000 units (not that final expenditure and unit numbers not yet available for social and affordable delivery as at 11 March 2024).
 
-2. 42,500 units: The maximum number of residential units that could be funded if the key challenges outlined below are not addressed. 
+2. 42,500 units: The theoretical maximum number of residential units that could be funded if the key challenges outlined below are not addressed. 
 
 ** Future Residential Development Finance Market **
 
-3. 60,000 units: The maximum number of residential units that could be funded if the key challenges outlined below are not addressed.
+3. 60,000 units: The maximum number of residential units that could be funded if the key challenges outlined below are not addressed satisfactorily.
 
 ## Implications by Tenure 
 
@@ -214,7 +289,22 @@ SELECT source, target, value FROM tenure_to_purchaser
     value=value
     title="Development Finance → Tenure → Purchaser Capital (€m)"
     valueFmt='€#,##0"M"'
-    colorPallet={['#cf0d06','#eb5752','#e88a87']}
+    echartsOptions={{
+        series: [{
+            data: [
+                { name: 'Private (Institutional)', itemStyle: { color: '#226AA4' } },
+                { name: 'Private (Domestic)', itemStyle: { color: '#44A1BF' } },
+                { name: 'Private Individuals', itemStyle: { color: '#44A1BF' } },
+                { name: 'Private For Sale', itemStyle: { color: '#46A486' } },
+                { name: 'One-Off Builds', itemStyle: { color: '#85C7C6' } },
+                { name: 'Affordable For Sale', itemStyle: { color: '#D2C6AC' } },
+                { name: 'Affordable Cost Rental', itemStyle: { color: '#8F3D56' } },
+                { name: 'Social Housing', itemStyle: { color: '#8DACBF' } },
+                { name: 'State', itemStyle: { color: '#A5CDEE' } },
+                { name: 'State Funding', itemStyle: { color: '#A5CDEE' } }
+            ]
+        }]
+    }}
 />
     </Tab>
     <Tab label="42,500 Units Scenario">
@@ -255,6 +345,23 @@ SELECT source, target, value FROM tenure_to_purchaser
     value=value
     title="Development Finance → Tenure → Purchaser Capital (€m)"
     valueFmt='€#,##0"M"'
+    echartsOptions={{
+        series: [{
+            data: [
+                { name: 'Private (Institutional)', itemStyle: { color: '#226AA4' } },
+                { name: 'Private (Domestic)', itemStyle: { color: '#44A1BF' } },
+                { name: 'Private Individuals', itemStyle: { color: '#44A1BF' } },
+                { name: 'Private For Sale', itemStyle: { color: '#46A486' } },
+                { name: 'One-Off Builds', itemStyle: { color: '#85C7C6' } },
+                { name: 'Affordable For Sale', itemStyle: { color: '#D2C6AC' } },
+                { name: 'Affordable Cost Rental', itemStyle: { color: '#8F3D56' } },
+                { name: 'Social Housing', itemStyle: { color: '#8DACBF' } },
+                { name: 'State Funding', itemStyle: { color: '#A5CDEE' } },
+                { name: 'State', itemStyle: { color: '#A5CDEE' } }
+ 
+            ]
+        }]
+    }}
 />
     </Tab>
     <Tab label="60,000 Units Scenario">
@@ -297,6 +404,24 @@ SELECT source, target, value FROM tenure_to_purchaser
     value=value
     title="Development Finance → Tenure → Purchaser Capital (€m)"
     valueFmt='€#,##0"M"'
+    echartsOptions={{
+        series: [{
+            data: [
+                { name: 'Private (Institutional)', itemStyle: { color: '#226AA4' } },
+                { name: 'Institutions', itemStyle: { color: '#226AA4' } },
+                { name: 'Private For Rent (PRS)', itemStyle: { color: '#F4B548' } },
+                { name: 'Private For Sale', itemStyle: { color: '#46A486' } },     
+                { name: 'Private (Domestic)', itemStyle: { color: '#44A1BF' } },
+                { name: 'Private Individuals', itemStyle: { color: '#44A1BF' } },
+                { name: 'One-Off Builds', itemStyle: { color: '#85C7C6' } },
+                { name: 'Affordable For Sale', itemStyle: { color: '#D2C6AC' } },
+                { name: 'Affordable Cost Rental', itemStyle: { color: '#8F3D56' } },
+                { name: 'Social Housing', itemStyle: { color: '#8DACBF' } },
+                { name: 'State Funding', itemStyle: { color: '#A5CDEE' } },
+                { name: 'State', itemStyle: { color: '#A5CDEE' } }, 
+            ]
+        }]
+    }}
 />
     </Tab>
 </Tabs>
@@ -307,104 +432,67 @@ But there are several challenges in the Residential Development Finance Market t
 
 * State funding is allocated primarily through either direct procurement or forwarded funding arrangements.
 
-* Affordable Housing not being financed by private sources due to cost/viability issues, with neither the Corí Conaithe or the Secure Tenancy Affordable Rental Investment (STAR) Scheme delivering effectively at present.
+* Affordable Housing not being financed by private sources due to cost/viability issues, without a subsidy with neither the Corí Conaithe or the Secure Tenancy Affordable Rental Investment (STAR) Scheme working effectively at present, as they have not addressed key concerns of private finance.
 
-* The Private Rental Sector (PRS) is not functioning and delivered no new residential units in 2024. 
+* The Private Rental Sector (PRS) is not functioning and delivered no new residential units in 2024. While the interest rate and construction inflaction shocks would have tempered supply, rent increases have by now compensated for the inflation and interst rates are normalising. The primary reason for the lack of investment in the sector now is the 2% rent cap and its failure to offer investors an appropriate hedge to the investment requirements of their beneficiaries - often just normal pension holders.  
 
 ## Development Finance by Tenure
 
-```sql dev_finance_by_tenure_30k
+```sql dev_finance_by_tenure_combined
+-- Combine 30k and 60k scenarios and create a combined x-axis category
+WITH combined_data AS (
+    SELECT
+        '30k Units' as Scenario,
+        Tenure,
+        Development_Finance AS Source,
+        SUM(try_cast(Capital AS DOUBLE)) AS Value -- Use try_cast
+    FROM sankey_a.sankey_a
+    WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
+    GROUP BY Scenario, Tenure, Development_Finance
+    UNION ALL
+    SELECT
+        '60k Units' as Scenario,
+        Tenure,
+        Development_Finance AS Source,
+        SUM(try_cast(Capital AS DOUBLE)) AS Value -- Use try_cast
+    FROM sankey_c.sankey_c -- Assuming sankey_c corresponds to 60k
+    WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
+    GROUP BY Scenario, Tenure, Development_Finance
+)
 SELECT
+    (Source || ' - ' || Scenario) AS SourceScenario,
     Tenure,
-    Development_Finance AS Source,
-    SUM(try_cast(Capital AS DOUBLE)) AS Value -- Use try_cast
-FROM sankey_a.sankey_a
-WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
-GROUP BY Tenure, Development_Finance
-ORDER BY
-    CASE Development_Finance
+    Value,
+    -- Add columns for ordering if needed
+    CASE Source
         WHEN 'State Funding' THEN 1
         WHEN 'Private (Domestic)' THEN 2
         WHEN 'Private (Institutional)' THEN 3
         ELSE 4
-    END
+    END AS source_order,
+    CASE Scenario
+        WHEN '30k Units' THEN 1
+        WHEN '60k Units' THEN 2
+        ELSE 3
+    END AS scenario_order
+FROM combined_data
+ORDER BY scenario_order, source_order
 ```
-
-```sql dev_finance_by_tenure_42k
-SELECT
-    Tenure,
-    Development_Finance AS Source,
-    SUM(try_cast(Capital AS DOUBLE)) AS Value -- Use try_cast
-FROM sankey_b.sankey_b
-WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
-GROUP BY Tenure, Development_Finance
-ORDER BY
-    CASE Development_Finance
-        WHEN 'State Funding' THEN 1
-        WHEN 'Private (Domestic)' THEN 2
-        WHEN 'Private (Institutional)' THEN 3
-        ELSE 4
-    END
-```
-
-```sql dev_finance_by_tenure_60k
-SELECT
-    Tenure,
-    Development_Finance AS Source,
-    SUM(try_cast(Capital AS DOUBLE)) AS Value -- Use try_cast
-FROM sankey_c.sankey_c
-WHERE try_cast(Capital AS DOUBLE) > 0 -- Filter using try_cast
-GROUP BY Tenure, Development_Finance
-ORDER BY
-    CASE Development_Finance
-        WHEN 'State Funding' THEN 1
-        WHEN 'Private (Domestic)' THEN 2
-        WHEN 'Private (Institutional)' THEN 3
-        ELSE 4
-    END
-```
-
-<Grid cols=2>
 
 <BarChart
-    data={dev_finance_by_tenure_30k}
-    x=Source
+    data={dev_finance_by_tenure_combined}
+    x=SourceScenario
     y=Value
     series=Tenure
     stacked=true
     sort=false
-    title="30,000 Units Scenario"
-    xAxisTitle="Source of Finance"
+    title="Development Finance by Tenure (30k vs 60k Units)"
+    xAxisTitle="Source of Finance - Scenario"
     yAxisTitle="Development Finance (€m)"
     yFmt='€#,##0"M"'
-    yMax={15000}
+    seriesOrder={['Social Housing', 'One-Off Builds', 'Affordable For Sale', 'Private For Sale', 'Affordable Cost Rental', 'Private for Rent (PRS)']}
+    xLabelWrap=true
+    echartsOptions={{
+        color: ['#F4B548', '#8DACBF', '#85C7C6', '#D2C6AC', '#46A486','#8F3D56']
+    }}
 />
-
-<BarChart
-    data={dev_finance_by_tenure_42k}
-    x=Source
-    y=Value
-    series=Tenure
-    stacked=true
-    sort=false
-    title="42,500 Units Scenario"
-    xAxisTitle="Source of Finance"
-    yAxisTitle="Development Finance (€m)"
-    yFmt='€#,##0"M"'
-    yMax={15000}
-/>
-
-<BarChart
-    data={dev_finance_by_tenure_60k}
-    x=Source
-    y=Value
-    series=Tenure
-    stacked=true
-    sort=false
-    title="60,000 Units Scenario"
-    xAxisTitle="Source of Finance"
-    yAxisTitle="Development Finance (€m)"
-    yFmt='€#,##0"M"'
-    yMax={15000}
-/>
-</Grid>
