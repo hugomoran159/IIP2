@@ -1,7 +1,15 @@
-Tenure,Purchaser,Capital
-Social Housing,State,5835
-One-Off Builds,Private Individuals,2063
-Affordable For Sale,Private Individuals,5835
-Private For Sale,Private Individuals,7800
-Affordable Cost Rental,Institutions,5835
-Private For Rent (PRS),Institutions,3870
+Tenure,Purchaser,Capital,pathId
+Social Housing,State,653.5,PD_SH_S
+Social Housing,State,2497.08,PI_SH_S
+Social Housing,State,2684.42,SF_SH_S
+One-Off Builds,Private Individuals,2063,PD_OOB_PI
+Affordable For Sale,Private Individuals,1290.04,PD_AFS_PI
+Affordable For Sale,Private Individuals,2579.07,PI_AFS_PI
+Affordable For Sale,Private Individuals,1965.89,SF_AFS_PI
+Private For Sale,Private Individuals,2597.4,PD_PFS_PI
+Private For Sale,Private Individuals,5202.6,PI_PFS_PI
+Affordable Cost Rental,Institutions,1290.04,PD_ACR_I
+Affordable Cost Rental,Institutions,2579.07,PI_ACR_I
+Affordable Cost Rental,Institutions,1965.89,SF_ACR_I
+Private For Rent (PRS),Institutions,301.86,PD_PRS_I
+Private For Rent (PRS),Institutions,3568.14,PI_PRS_I

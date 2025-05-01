@@ -1,46 +1,11 @@
-﻿Development_Finance,Tenure,Purchaser,Capital
-Private (Domestic),One-Off Builds,State,
-Private (Domestic),One-Off Builds,Private Individuals,2062.5
-Private (Domestic),One-Off Builds,Institutional,
-Private (Domestic),Social Housing,State,545
-Private (Domestic),Social Housing,Private Individuals,
-Private (Domestic),Social Housing,Institutional,
-Private (Domestic),Affordable For Sale,State,
-Private (Domestic),Affordable For Sale,Private Individuals,900.19106
-Private (Domestic),Affordable For Sale,Institutional,
-Private (Domestic),Affordable Cost Rental,State,
-Private (Domestic),Affordable Cost Rental,Private Individuals,
-Private (Domestic),Affordable Cost Rental,Institutional,0.036333333
-Private (Domestic),Private For Sale,State,
-Private (Domestic),Private For Sale,Private Individuals,3320.034513
-Private (Domestic),Private For Sale,Institutional,
-Private (Domestic),Private for Rent (PRS),State,
-Private (Domestic),Private for Rent (PRS),Private Individuals,
-Private (Domestic),Private for Rent (PRS),Institutional,
-Private (Institutional),One-Off Builds,State,
-Private (Institutional),One-Off Builds,Private Individuals,
-Private (Institutional),One-Off Builds,Institutional,
-Private (Institutional),Social Housing,State,959.68218
-Private (Institutional),Social Housing,Private Individuals,
-Private (Institutional),Social Housing,Institutional,
-Private (Institutional),Affordable For Sale,State,
-Private (Institutional),Affordable For Sale,Private Individuals,1800.38212
-Private (Institutional),Affordable For Sale,Institutional,
-Private (Institutional),Affordable Cost Rental,State,
-Private (Institutional),Affordable Cost Rental,Private Individuals,
-Private (Institutional),Affordable Cost Rental,Institutional,0.072666667
-Private (Institutional),Private For Sale,State,
-Private (Institutional),Private For Sale,Private Individuals,2515.069027
-Private (Institutional),Private For Sale,Institutional,
-Private (Institutional),Private for Rent (PRS),State,
-Private (Institutional),Private for Rent (PRS),Private Individuals,
-Private (Institutional),Private for Rent (PRS),Institutional,
-State Funding,One-Off Builds,State,
-State Funding,One-Off Builds,Private Individuals,
-State Funding,One-Off Builds,Institutional,
-State Funding,Social Housing,State,3348
-State Funding,Social Housing,Private Individuals,
-State Funding,Social Housing,Institutional,
-State Funding,Affordable For Sale,State,
-State Funding,Affordable For Sale,Private Individuals,1335
-State Funding,Affordable Cost Rental,State,817
+﻿Development_Finance,Tenure,Capital,pathId
+Private (Domestic),One-Off Builds,2062.5,PD_OOB_PI
+Private (Domestic),Social Housing,545,PD_SH_S
+Private (Domestic),Affordable For Sale,900.19106,PD_AFS_PI
+Private (Domestic),Private For Sale,3320.034513,PD_PFS_PI
+Private (Institutional),Social Housing,959.68218,PI_SH_S
+Private (Institutional),Affordable For Sale,1800.38212,PI_AFS_PI
+Private (Institutional),Private For Sale,2515.069027,PI_PFS_PI
+State Funding,Social Housing,3348,SF_SH_S
+State Funding,Affordable For Sale,1335,SF_AFS_PI
+State Funding,Affordable Cost Rental,817,SF_ACR_S

@@ -32,7 +32,7 @@ Irish Institutional Property (IIP) has updated its analysis of the likely capita
 
 * Investment or Long-term ownership capital: to buy and own the completed residential units.
 
-* Tenure & Affordability, and the impact this has on the ability to scale overall housing output numbers. Overall housing output can only scale from current levels if the end user can afford to rent or buy new housing. Highlighting the critical importance of using state capital expenditure to leverage (unlock?) private funding to the total funding available for residential development is in place for all tenures.
+* Tenure, affordability and the target output are all linked. The overall housing target output can only be met if the output matches end users ability to purchase or rents new housing. If the supply of both affordable rental and units for purchase is to meet demand the state needs to leverage private capital alongside its commitment to this sector. If this is just left to the state, the volume of housing in this sector will fall far below demand.
 
 # Development Finance to Build Houses and Apartments
 
@@ -75,7 +75,7 @@ select '60k Units' as Scenario, Source, Scenario_60k as Value from housing_model
  As we examine the current housing finance market, it appears unlikely that sufficient finance would be available to deliver 60,000 residential units. 
 
 * State. It is assumed that the state capital allocation to Housing is near the upper limit, both historically and relative to other EU/OECD members. Budget 2025 allocates €6.1bn: capital funding €3.2bn, Land Development Agency €1.25bn and Housing Finance Agency €1.65bn.
-* Private Finance. The balance of the financerequired to develop 60,000 units (€26.3bn??) is significant, requiring 80% of all funding to come from private sources 
+* Private Finance. The balance of the finance required to develop 60,000 units, €26.3bn, is significant, requiring 80% of all funding to come from private sources 
 * Challenges. Insufficient private finance is being attracted to aid the delivery of affordable housing alongside state funding and the complete lack of a functioning PRS sector.
 
 
@@ -167,6 +167,13 @@ FROM sankey_data.small
     valueFmt='€#,##0"M"'
     echartsOptions={{
         series: [{
+            emphasis: { focus: 'pathId' },
+            links: sankey_finance_flow_data_30k.map(d => ({ 
+                source: d.source, 
+                target: d.target, 
+                value: d.value, 
+                pathId: d.pathid // Use pathid from query result
+            })),
             data: [
                 { name: 'Private (Institutional)', itemStyle: { color: '#226AA4' } },
                 { name: 'Private (Domestic)', itemStyle: { color: '#44A1BF' } },
@@ -197,6 +204,13 @@ FROM sankey_data.large
     valueFmt='€#,##0"M"'
     echartsOptions={{
         series: [{
+            emphasis: { focus: 'pathId' },
+            links: sankey_finance_flow_data_60k.map(d => ({ 
+                source: d.source, 
+                target: d.target, 
+                value: d.value, 
+                pathId: d.pathid // Use pathid from query result
+            })),
             data: [
                 { name: 'Private (Institutional)', itemStyle: { color: '#226AA4' } },
                 { name: 'Institutional', itemStyle: { color: '#226AA4' } },
@@ -254,13 +268,10 @@ WITH finance_to_tenure AS (
     SELECT
         Development_Finance AS source,
         Tenure AS target,
-        -- Sum capital only for the Finance->Tenure stage from original data
-        SUM(Capital) AS value
-    FROM sankey_a.sankey_a -- Use original data for this stage
-    -- Ensure links have value and valid nodes
-    WHERE Capital > 0 AND Capital IS NOT NULL
-      AND Tenure IS NOT NULL AND Tenure != ''
-      AND Development_Finance IS NOT NULL AND Development_Finance != ''
+        SUM("Capital") AS value,
+        any_value(pathId) AS pathId -- Select pathId
+    FROM sankey_a.sankey_a -- Use reformatted file
+    WHERE "Capital" > 0 AND "Capital" IS NOT NULL
     GROUP BY Development_Finance, Tenure
 ),
 -- Stage 2 Links: Tenure -> Purchaser
@@ -268,19 +279,15 @@ tenure_to_purchaser AS (
      SELECT
         Tenure AS source,
         Purchaser AS target,
-        -- Sum capital only for the Tenure->Purchaser stage from new data
-        SUM(CAST(Capital AS DOUBLE)) AS value -- Cast Capital to DOUBLE
-    FROM sankey_a.sankey_a_purchaser -- Corrected data source name back
-    -- Ensure links have value and valid nodes
-    WHERE CAST(Capital AS DOUBLE) > 0 AND Capital IS NOT NULL
-      AND Purchaser IS NOT NULL AND Purchaser != ''
-      AND Tenure IS NOT NULL AND Tenure != ''
-    GROUP BY Tenure, Purchaser
+        CAST("Capital" AS DOUBLE) AS value,
+        pathId -- Select pathId
+    FROM sankey_a.sankey_a_purchaser -- Use purchaser file
+    WHERE CAST("Capital" AS DOUBLE) > 0 AND "Capital" IS NOT NULL
 )
--- Combine all links
-SELECT source, target, value FROM finance_to_tenure
+-- Combine all links, selecting pathId
+SELECT source, target, value, pathId FROM finance_to_tenure
 UNION ALL
-SELECT source, target, value FROM tenure_to_purchaser
+SELECT source, target, value, pathId FROM tenure_to_purchaser
 ```
 <SankeyChart
     data={three_stage_sankey_data_30k}
@@ -291,6 +298,13 @@ SELECT source, target, value FROM tenure_to_purchaser
     valueFmt='€#,##0"M"'
     echartsOptions={{
         series: [{
+            emphasis: { focus: 'pathId' },
+            links: three_stage_sankey_data_30k.map(d => ({ 
+                source: d.source, 
+                target: d.target, 
+                value: d.value, 
+                pathId: d.pathId // Use pathid from query result
+            })),
             data: [
                 { name: 'Private (Institutional)', itemStyle: { color: '#226AA4' } },
                 { name: 'Private (Domestic)', itemStyle: { color: '#44A1BF' } },
@@ -310,32 +324,31 @@ SELECT source, target, value FROM tenure_to_purchaser
     <Tab label="42,500 Units Scenario">
 
 ```sql three_stage_sankey_data_42k
--- Create links between Development Finance -> Tenure -> Purchaser with tracking IDs for 60k scenario
+-- Stage 1 Links: Development Finance -> Tenure
 WITH finance_to_tenure AS (
-    SELECT 
+    SELECT
         Development_Finance AS source,
         Tenure AS target,
-        -- Sum capital only for the Finance->Tenure stage from original data
-        SUM(Capital) AS value
-    FROM sankey_b.sankey_b -- Use original data for this stage
-    WHERE Capital > 0
+        SUM("Capital") AS value,
+        any_value(pathId) AS pathId -- Select pathId
+    FROM sankey_b.sankey_b -- Use reformatted file
+    WHERE "Capital" > 0 AND "Capital" IS NOT NULL
     GROUP BY Development_Finance, Tenure
 ),
+-- Stage 2 Links: Tenure -> Purchaser
 tenure_to_purchaser AS (
-    SELECT 
+     SELECT
         Tenure AS source,
         Purchaser AS target,
-        -- Sum capital only for the Tenure->Purchaser stage from new data
-        SUM(CAST(Capital AS DOUBLE)) AS value -- Cast Capital to DOUBLE
-    FROM sankey_b.sankey_b_purchaser -- Corrected data source name back
-    WHERE CAST(Capital AS DOUBLE) > 0 -- Cast Capital in WHERE clause
-    GROUP BY Tenure, Purchaser
+        CAST("Capital" AS DOUBLE) AS value,
+        pathId -- Select pathId
+    FROM sankey_b.sankey_b_purchaser -- Use purchaser file
+    WHERE CAST("Capital" AS DOUBLE) > 0 AND "Capital" IS NOT NULL
 )
-
--- Combine all links
-SELECT source, target, value FROM finance_to_tenure
+-- Combine all links, selecting pathId
+SELECT source, target, value, pathId FROM finance_to_tenure
 UNION ALL
-SELECT source, target, value FROM tenure_to_purchaser
+SELECT source, target, value, pathId FROM tenure_to_purchaser
 ```
 
 <SankeyChart
@@ -347,6 +360,13 @@ SELECT source, target, value FROM tenure_to_purchaser
     valueFmt='€#,##0"M"'
     echartsOptions={{
         series: [{
+            emphasis: { focus: 'pathId' },
+            links: three_stage_sankey_data_42k.map(d => ({ 
+                source: d.source, 
+                target: d.target, 
+                value: d.value, 
+                pathId: d.pathId // Use pathid from query result
+            })),
             data: [
                 { name: 'Private (Institutional)', itemStyle: { color: '#226AA4' } },
                 { name: 'Private (Domestic)', itemStyle: { color: '#44A1BF' } },
@@ -358,7 +378,6 @@ SELECT source, target, value FROM tenure_to_purchaser
                 { name: 'Social Housing', itemStyle: { color: '#8DACBF' } },
                 { name: 'State Funding', itemStyle: { color: '#A5CDEE' } },
                 { name: 'State', itemStyle: { color: '#A5CDEE' } }
- 
             ]
         }]
     }}
@@ -367,34 +386,31 @@ SELECT source, target, value FROM tenure_to_purchaser
     <Tab label="60,000 Units Scenario">
 
 ```sql three_stage_sankey_data_60k
--- Create links between Development Finance -> Tenure -> Purchaser for 60k scenario
+-- Stage 1 Links: Development Finance -> Tenure
 WITH finance_to_tenure AS (
-    SELECT 
+    SELECT
         Development_Finance AS source,
         Tenure AS target,
-        -- Sum capital only for the Finance->Tenure stage from original data
-        SUM(Capital) AS value
-    FROM sankey_c.sankey_c -- Use original data for this stage
-    WHERE Capital IS NOT NULL AND CAST(Capital AS DOUBLE) > 0 -- Ensure capital is numeric and > 0
+        SUM("Capital") AS value,
+        any_value(pathId) AS pathId -- Select pathId
+    FROM sankey_c.sankey_c -- Use reformatted file
+    WHERE "Capital" > 0 AND "Capital" IS NOT NULL
     GROUP BY Development_Finance, Tenure
 ),
+-- Stage 2 Links: Tenure -> Purchaser
 tenure_to_purchaser AS (
-    SELECT 
+     SELECT
         Tenure AS source,
         Purchaser AS target,
-        -- Sum capital only for the Tenure->Purchaser stage from new data
-        SUM(CAST(Capital AS DOUBLE)) AS value -- Cast Capital to DOUBLE
-    FROM sankey_c.sankey_c_purchaser -- Use NEW data for this stage
-    WHERE Capital IS NOT NULL AND CAST(Capital AS DOUBLE) > 0 -- Cast Capital in WHERE clause
-      AND Purchaser IS NOT NULL AND Purchaser != ''
-      AND Tenure IS NOT NULL AND Tenure != ''
-    GROUP BY Tenure, Purchaser
+        CAST("Capital" AS DOUBLE) AS value,
+        pathId -- Select pathId
+    FROM sankey_c.sankey_c_purchaser -- Use purchaser file
+    WHERE CAST("Capital" AS DOUBLE) > 0 AND "Capital" IS NOT NULL
 )
-
--- Combine all links
-SELECT source, target, value FROM finance_to_tenure
+-- Combine all links, selecting pathId
+SELECT source, target, value, pathId FROM finance_to_tenure
 UNION ALL
-SELECT source, target, value FROM tenure_to_purchaser
+SELECT source, target, value, pathId FROM tenure_to_purchaser
 ```
 
 <SankeyChart
@@ -406,6 +422,13 @@ SELECT source, target, value FROM tenure_to_purchaser
     valueFmt='€#,##0"M"'
     echartsOptions={{
         series: [{
+            emphasis: { focus: 'pathId' },
+            links: three_stage_sankey_data_60k.map(d => ({ 
+                source: d.source, 
+                target: d.target, 
+                value: d.value, 
+                pathId: d.pathId // Use pathid from query result
+            })),
             data: [
                 { name: 'Private (Institutional)', itemStyle: { color: '#226AA4' } },
                 { name: 'Institutions', itemStyle: { color: '#226AA4' } },
@@ -496,3 +519,7 @@ ORDER BY scenario_order, source_order
         color: ['#F4B548', '#8DACBF', '#85C7C6', '#D2C6AC', '#46A486','#8F3D56']
     }}
 />
+
+** Key Issues: **
+
+To secure development finance for 60,000 units each year, affordable housing needs to be financed primarily by private sources. This requires a combination of the Croí Conaithe and/or the Secure Tenancy Affordable Rental Investment (STAR) Schemes to work more effectively than at present.
