@@ -1,11 +1,11 @@
 ﻿Development_Finance,Tenure,Capital,pathId
 Private (Domestic),One-Off Builds,2012.625,PD_OOB_PI
 Private (Domestic),Affordable For Sale,86.18483333,PD_AFS_PI
-Private (Domestic),Private For Sale,2401.015247,PD_PFS_PI
-Private (Domestic),Social Housing, 515, PD_SH_PI
-Private (Institutional),Social Housing, 681, PI_SH_PI
+Private (Domestic),Private For Sale,1886,PD_PFS_PI
+Private (Domestic),Social Housing, 515,PD_SH_PI
+Private (Institutional),Social Housing,681,PI_SH_PI
 Private (Institutional),Affordable For Sale,172.3696667,PI_AFS_PI
-Private (Institutional),Private For Sale,3176.030494,PI_PFS_PI
+Private (Institutional),Private For Sale,2495,PI_PFS_PI
 State Funding,Social Housing,1666.909388,SF_SH_S
 State Funding,Affordable For Sale,150,SF_AFS_PI
 State Funding,Affordable Cost Rental,1183.56,SF_ACR_S
